@@ -29,7 +29,7 @@ A clean mobile app for discovering trending movies and searching for your favori
    Add your key to `.env`:
 
    ```
-   API_KEY=your_tmdb_api_key_here
+   TMDB_ACCESS_TOKEN=your_tmdb_access_token_here
    API_URL=https://api.themoviedb.org/3
    IMAGE_BASE_URL=https://image.tmdb.org/t/p/w500
    ```
