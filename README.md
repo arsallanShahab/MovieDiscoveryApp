@@ -54,6 +54,10 @@ A clean mobile app for discovering trending movies and searching for your favori
    npm run ios
    ```
 
+## Note
+
+- Adding user reviews is simulated in the app. No reviews are actually submitted to TMDB, but the UI is designed to show how it would work.
+
 ## Tech Stack
 
 - **React Native** (0.76+)
