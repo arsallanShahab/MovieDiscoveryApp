@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { getMovieDetails } from '../services/api';
+import { IMAGE_BASE_URL } from '../utils/constants';
 import CustomHeader from '../components/CustomHeader';
 
 const MovieDetailsScreen = () => {
@@ -42,7 +43,7 @@ const MovieDetailsScreen = () => {
       <Image
         source={{
           uri: item.profile_path
-            ? `https://image.tmdb.org/t/p/w200${item.profile_path}`
+            ? `${IMAGE_BASE_URL.W200}${item.profile_path}`
             : 'https://via.placeholder.com/100x150',
         }}
         style={styles.castImage}
@@ -62,7 +63,7 @@ const MovieDetailsScreen = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Image
           source={{
-            uri: `https://image.tmdb.org/t/p/w500${
+            uri: `${IMAGE_BASE_URL.W500}${
               movie.backdrop_path || movie.poster_path
             }`,
           }}

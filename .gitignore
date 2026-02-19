@@ -40,6 +40,8 @@ local.properties
 node_modules/
 npm-debug.log
 yarn-error.log
+yarn-debug.log*
+.pnpm-debug.log*
 
 # fastlane
 #
@@ -55,6 +57,12 @@ yarn-error.log
 
 # Bundle artifact
 *.jsbundle
+index.android.bundle
+index.android.bundle.map
+index.ios.bundle
+index.ios.bundle.map
+android/app/src/main/assets/index.android.bundle
+android/app/src/main/assets/index.android.bundle.meta
 
 # Ruby / CocoaPods
 **/Pods/

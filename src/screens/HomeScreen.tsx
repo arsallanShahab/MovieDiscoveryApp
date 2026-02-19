@@ -14,6 +14,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { getPopularMovies } from '../services/api';
 import { Movie } from '../types';
+import { IMAGE_BASE_URL } from '../utils/constants';
 import CustomHeader from '../components/CustomHeader';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import {
@@ -105,7 +106,7 @@ const HomeScreen = () => {
             {item.poster_path ? (
               <Image
                 source={{
-                  uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+                  uri: `${IMAGE_BASE_URL.W500}${item.poster_path}`,
                 }}
                 style={styles.poster}
                 resizeMode="cover"
@@ -153,7 +154,7 @@ const HomeScreen = () => {
           {item.poster_path ? (
             <Image
               source={{
-                uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+                uri: `${IMAGE_BASE_URL.W500}${item.poster_path}`,
               }}
               style={styles.poster}
               resizeMode="cover"
@@ -406,7 +407,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   ratingText: {
-    color: '#fff',
+    color: '#1A1A1A',
     fontSize: 12,
     fontWeight: '700',
   },

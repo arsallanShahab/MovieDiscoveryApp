@@ -13,6 +13,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { searchMovies } from '../services/api';
 import { debounce } from 'lodash';
+import { IMAGE_BASE_URL, DEBOUNCE_TIME } from '../utils/constants';
 import CustomHeader from '../components/CustomHeader';
 import { HugeiconsIcon } from '@hugeicons/react-native';
 import {
@@ -61,7 +62,7 @@ const SearchScreen = () => {
     debounce((text: string) => {
       setPage(1);
       performSearch(text, 1);
-    }, 500),
+    }, DEBOUNCE_TIME),
     [],
   );
 
@@ -98,7 +99,7 @@ const SearchScreen = () => {
         <Image
           source={{
             uri: item.poster_path
-              ? `https://image.tmdb.org/t/p/w200${item.poster_path}`
+              ? `${IMAGE_BASE_URL.W200}${item.poster_path}`
               : 'https://via.placeholder.com/100x150',
           }}
           style={styles.poster}

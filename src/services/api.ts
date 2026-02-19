@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_URL, TMDB_ACCESS_TOKEN } from '@env';
+import { API_ENDPOINTS } from '../utils/constants';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -14,7 +15,9 @@ const api = axios.create({
 
 export const getPopularMovies = async (page = 1) => {
   try {
-    const response = await api.get('/movie/popular', { params: { page } });
+    const response = await api.get(API_ENDPOINTS.POPULAR_MOVIES, {
+      params: { page },
+    });
     return response.data;
   } catch (error) {
     console.error('Error fetching popular movies:', error);
@@ -24,7 +27,7 @@ export const getPopularMovies = async (page = 1) => {
 
 export const searchMovies = async (query: string, page = 1) => {
   try {
-    const response = await api.get('/search/movie', {
+    const response = await api.get(API_ENDPOINTS.SEARCH_MOVIES, {
       params: { query, page },
     });
     return response.data;
@@ -37,9 +40,9 @@ export const searchMovies = async (query: string, page = 1) => {
 export const getMovieDetails = async (movieId: number) => {
   try {
     const [details, credits, reviews] = await Promise.all([
-      api.get(`/movie/${movieId}`),
-      api.get(`/movie/${movieId}/credits`),
-      api.get(`/movie/${movieId}/reviews`),
+      api.get(API_ENDPOINTS.MOVIE_DETAILS(movieId)),
+      api.get(API_ENDPOINTS.MOVIE_CREDITS(movieId)),
+      api.get(API_ENDPOINTS.MOVIE_REVIEWS(movieId)),
     ]);
 
     return {
