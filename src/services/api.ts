@@ -34,4 +34,23 @@ export const searchMovies = async (query: string, page = 1) => {
   }
 };
 
+export const getMovieDetails = async (movieId: number) => {
+  try {
+    const [details, credits, reviews] = await Promise.all([
+      api.get(`/movie/${movieId}`),
+      api.get(`/movie/${movieId}/credits`),
+      api.get(`/movie/${movieId}/reviews`),
+    ]);
+
+    return {
+      ...details.data,
+      credits: credits.data,
+      reviews: reviews.data,
+    };
+  } catch (error) {
+    console.error('Error fetching movie details:', error);
+    throw error;
+  }
+};
+
 export default api;
