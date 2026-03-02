@@ -42,6 +42,7 @@ const HomeScreen = () => {
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isGridView, setIsGridView] = useState(true);
+  const [showButton, setShowButton] = useState<boolean>(false);
 
   const fetchMovies = useCallback(
     async (pageNum: number, shouldRefresh = false) => {
@@ -53,7 +54,12 @@ const HomeScreen = () => {
       try {
         const response = await getPopularMovies(pageNum);
 
-        if (response && response.results) {
+        if (
+          response &&
+          response.results &&
+          response.results.length &&
+          typeof response.result !== 'string'
+        ) {
           setMovies(prev =>
             shouldRefresh ? response.results : [...prev, ...response.results],
           );
@@ -73,12 +79,16 @@ const HomeScreen = () => {
   );
 
   useEffect(() => {
+    console.log('First page load: ');
+    console.log('Page from first page load: ', page);
     fetchMovies(1, true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLoadMore = () => {
-    if (hasMore && !loading && !error) {
+    console.log('Page: ', page);
+    if (hasMore && !loading && !error && !(page > 3)) {
+      setLoading(true);
       const nextPage = page + 1;
       setPage(nextPage);
       fetchMovies(nextPage);
@@ -198,11 +208,25 @@ const HomeScreen = () => {
   };
 
   const renderFooter = () => {
-    if (!loading) return <View style={styles.footerSpacer} />;
-
+    if (!loading)
+      return (
+        <View style={styles.footerSpacer}>
+          {page > 3 && (
+            <TouchableOpacity
+              onPress={() => fetchMovies(page + 1)}
+              style={styles.btn}
+            >
+              <Text style={{ color: '#fff' }}>Load More</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      );
+    if (page == 2 || page == 1) {
+      return null;
+    }
     return (
       <View style={styles.loaderFooter}>
-        <ActivityIndicator size="small" color="#E50914" />
+        <ActivityIndicator size="small" color="#031e7e" />
       </View>
     );
   };
@@ -229,48 +253,50 @@ const HomeScreen = () => {
       />
 
       <View style={styles.listContainer}>
-        <FlatList
-          key={isGridView ? 'grid' : 'list'}
-          data={movies}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => `${item.id}-${index}`}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          style={styles.list}
-          contentContainerStyle={styles.listContent}
-          columnWrapperStyle={isGridView ? styles.columnWrapper : undefined}
-          showsVerticalScrollIndicator={false}
-          numColumns={isGridView ? COLUMN_count : 1}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={['#E50914']}
-              tintColor="#E50914"
-              progressViewOffset={20}
-            />
-          }
-          ListFooterComponent={renderFooter}
-          ListEmptyComponent={
-            !loading && error ? (
-              <View style={styles.centerContainer}>
-                <Text style={styles.errorText}>{error}</Text>
-                <TouchableOpacity
-                  onPress={() => fetchMovies(1, true)}
-                  style={styles.retryButton}
-                >
-                  <Text style={styles.retryButtonText}>Retry</Text>
-                </TouchableOpacity>
-              </View>
-            ) : loading && movies.length === 0 ? (
-              <ActivityIndicator
-                size="large"
-                color="#E50914"
-                style={styles.centerLoader}
+        {loading && page == 1 ? null : (
+          <FlatList
+            key={isGridView ? 'grid' : 'list'}
+            data={movies}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => `${item.id}-${index}`}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.75}
+            style={styles.list}
+            contentContainerStyle={styles.listContent}
+            columnWrapperStyle={isGridView ? styles.columnWrapper : undefined}
+            showsVerticalScrollIndicator={false}
+            numColumns={isGridView ? COLUMN_count : 1}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={['#E50914']}
+                tintColor="#E50914"
+                progressViewOffset={20}
               />
-            ) : null
-          }
-        />
+            }
+            ListFooterComponent={renderFooter}
+            ListEmptyComponent={
+              !loading && error ? (
+                <View style={styles.centerContainer}>
+                  <Text style={styles.errorText}>{error}</Text>
+                  <TouchableOpacity
+                    onPress={() => fetchMovies(1, true)}
+                    style={styles.retryButton}
+                  >
+                    <Text style={styles.retryButtonText}>Retry</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : loading && movies.length === 0 ? (
+                <ActivityIndicator
+                  size="large"
+                  color="#E50914"
+                  style={styles.centerLoader}
+                />
+              ) : null
+            }
+          />
+        )}
       </View>
 
       <TouchableOpacity
@@ -441,7 +467,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerSpacer: {
-    height: 20,
+    paddingVertical: 10,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  btn: {
+    flex: 1,
+    paddingHorizontal: 25,
+    paddingVertical: 10,
+    borderRadius: 5,
+    fontSize: 24,
+    color: '#fff',
+    backgroundColor: '#3016c4',
   },
   centerContainer: {
     flex: 1,

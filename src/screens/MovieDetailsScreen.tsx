@@ -8,11 +8,16 @@ import {
   StyleSheet,
   ActivityIndicator,
   Button,
+  TouchableOpacity,
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { getMovieDetails } from '../services/api';
 import { IMAGE_BASE_URL } from '../utils/constants';
 import CustomHeader from '../components/CustomHeader';
+import Review from '../components/Review';
+import type { Review as ReviewType } from '../types';
+
+const BREAKING_POINT = 5;
 
 const MovieDetailsScreen = () => {
   const route = useRoute<any>();
@@ -96,11 +101,8 @@ const MovieDetailsScreen = () => {
           </View>
 
           {movie.reviews?.results?.length > 0 ? (
-            movie.reviews.results.map((item: any) => (
-              <View key={item.id} style={styles.reviewCard}>
-                <Text style={styles.reviewAuthor}>{item.author}</Text>
-                <Text style={styles.reviewContent}>{item.content}</Text>
-              </View>
+            movie.reviews.results.map((item: ReviewType) => (
+              <Review key={item.id} data={item} />
             ))
           ) : (
             <Text>No reviews available.</Text>
